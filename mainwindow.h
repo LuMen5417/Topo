@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class ScribbleArea;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -14,13 +16,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void paintEvent(QPaintEvent *);
 
  private slots:
     void pushButtonNodeSlot();
+    void pushButtonLineSlot();
 
 private:
     Ui::MainWindow *ui;
+    ScribbleArea *scribbleArea;
 };
 
 #endif // MAINWINDOW_H

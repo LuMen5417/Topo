@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "scribblearea.h"
 
 #include <QPainter>
+
+int NodePixmapFlag=0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,8 +13,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QObject::connect(ui->pushButton_node, &QPushButton::clicked,this,&MainWindow::pushButtonNodeSlot);
+    QObject::connect(ui->pushButton_line, &QPushButton::clicked,this,&MainWindow::pushButtonLineSlot);
 
     //setCursor(QCursor(Qt::WaitCursor));
+    scribbleArea = new ScribbleArea;
+    //setCentralWidget(scribbleArea);
+
+    //set layout
+    ui->gridLayout->addWidget(scribbleArea,0,1);
+    ui->gridLayout->setColumnStretch(1,8);
 }
 
 void MainWindow::pushButtonNodeSlot()
@@ -22,13 +32,18 @@ void MainWindow::pushButtonNodeSlot()
     pixmap.load(":/images/node.png");
     cursor = QCursor(pixmap, -1, -1);
     setCursor(cursor);
+    NodePixmapFlag = 1;
 }
 
-void MainWindow::paintEvent(QPaintEvent *)
+void MainWindow::pushButtonLineSlot()
 {
-    QPainter painter(this);
-    painter.drawLine(100,100,200,200);
-
+    //set cursor
+    QCursor cursor;
+    QPixmap pixmap;
+    pixmap.load(":/images/line.png");
+    cursor = QCursor(pixmap, -1, -1);
+    setCursor(cursor);
+    NodePixmapFlag = 0;
 }
 
 MainWindow::~MainWindow()
