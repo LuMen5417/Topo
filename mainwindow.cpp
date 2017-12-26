@@ -40,7 +40,7 @@ void MainWindow::pushButtonLineSlot()
     //set cursor
     QCursor cursor;
     QPixmap pixmap;
-    pixmap.load(":/images/line.png");
+    pixmap.load(":/images/line_16x16.png");
     cursor = QCursor(pixmap, -1, -1);
     setCursor(cursor);
     NodePixmapFlag = 0;

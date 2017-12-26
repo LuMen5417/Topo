@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>images/node.png</file>
         <file>images/line.png</file>
+        <file>images/line_16x16.png</file>
     </qresource>
 </RCC>

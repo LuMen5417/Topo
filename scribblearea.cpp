@@ -57,6 +57,9 @@
 #endif
 #endif
 
+#include <QtDebug>
+#include <QPointF>
+
 #include "scribblearea.h"
 
 extern int NodePixmapFlag;
@@ -68,7 +71,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     setAttribute(Qt::WA_StaticContents);
     modified = false;
     scribbling = false;
-    myPenWidth = 1;
+    myPenWidth = 4;
     myPenColor = Qt::blue;
 }
 //! [0]
@@ -137,22 +140,24 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
 //! [11] //! [12]
 {
     if (event->button() == Qt::LeftButton) {
-        lastPoint = event->pos();
-        scribbling = true;
 
-        QLabel *label_pixmap=new QLabel(this);
+        if (NodePixmapFlag != 1){
+            startPoint = event->pos();
+            scribbling = true;
+        }else{
+            //qDebug()<<"The NodePixmapFlag:"<<NodePixmapFlag;
+            startPoint = event->pos();
 
-        QPixmap pixmap;
-        pixmap.load(":/images/node.png");
-        label_pixmap->setPixmap(pixmap);
-        label_pixmap->move(lastPoint);
+            drawPixmapTo(startPoint);
+        }
     }
 }
 
 void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && scribbling)
-        drawLineTo(event->pos());
+        drawLineMove(event->pos());
+        //drawLineTo(event->pos());
 }
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
@@ -191,18 +196,51 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
 void ScribbleArea::drawLineTo(const QPoint &endPoint)
 //! [17] //! [18]
 {
+
     QPainter painter(&image);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
-    painter.drawLine(lastPoint, endPoint);
+
+    painter.drawLine(startPoint, endPoint);
     modified = true;
 
     int rad = (myPenWidth / 2) + 2;
-    update(QRect(lastPoint, endPoint).normalized()
+    update(QRect(startPoint, endPoint).normalized()
                                      .adjusted(-rad, -rad, +rad, +rad));
-    lastPoint = endPoint;
+
+    startPoint = endPoint;
 }
 //! [18]
+
+void ScribbleArea::drawLineMove(const QPoint &endPoint)
+//! [17] //! [18]
+{
+    QPainter painter(&image);
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
+
+    //painter.drawLine(startPoint, endPoint);
+    modified = true;
+
+    int rad = (myPenWidth / 2) + 2;
+    update(QRect(startPoint, endPoint).normalized()
+                                     .adjusted(-rad, -rad, +rad, +rad));
+    //update();
+    lastPoint=endPoint;
+}
+
+void ScribbleArea::drawPixmapTo(const QPoint &endPoint)
+{
+    QPainter painter(&image);
+    QPixmap pix;
+    pix.load(":/images/node.png");
+    int x = endPoint.x();
+    int y = endPoint.y();
+    painter.drawPixmap(x-32,y-32,pix);
+    painter.drawText(x-36,y+36,QString("192.168.1.1"));
+    update();
+}
+
 
 //! [19]
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)

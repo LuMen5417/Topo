@@ -57,6 +57,21 @@
 #include <QWidget>
 #include <QLabel>
 
+#include <list>
+
+typedef struct RouterNode{
+    int number;
+    unsigned ipv4addr;
+    unsigned ipv4mask;
+}Rnode;
+
+typedef list<Rnode> nodeList;
+
+void list_add(nodeList &listcopy, const Rnode tempnode)
+{
+    listcopy.push_front(tempnode);
+}
+
 //! [0]
 class ScribbleArea : public QWidget
 {
@@ -87,6 +102,8 @@ protected:
 
 private:
     void drawLineTo(const QPoint &endPoint);
+    void drawLineMove(const QPoint &endPoint);
+    void drawPixmapTo(const QPoint &endPoint);
     void resizeImage(QImage *image, const QSize &newSize);
 
     bool modified;
@@ -94,7 +111,8 @@ private:
     int myPenWidth;
     QColor myPenColor;
     QImage image;
-    QPoint lastPoint;
+    QPoint lastPoint,startPoint;
+    nodeList listRouter;
 };
 //! [0]
 
