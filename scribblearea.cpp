@@ -64,6 +64,31 @@
 
 extern int NodePixmapFlag;
 
+unsigned int IPv4addrPool;
+unsigned int IPv4addrMask;
+int nodePool;
+
+void list_add(nodeList &listcopy, const Rnode tempnode)
+{
+    listcopy.push_front(tempnode);
+}
+
+unsigned int get_ipv4addr(int number)
+{
+    return IPv4addrPool+number;
+}
+
+unsigned int get_nodenumber()
+{
+    nodePool +=1;
+    return nodePool;
+}
+
+unsigned int get_ipv4mask()
+{
+    return IPv4addrMask;
+}
+
 //! [0]
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
@@ -71,8 +96,12 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     setAttribute(Qt::WA_StaticContents);
     modified = false;
     scribbling = false;
-    myPenWidth = 4;
-    myPenColor = Qt::blue;
+    myPenWidth = 2;
+    myPenColor = Qt::green;
+
+    nodePool = 0;
+    IPv4addrPool = 0x0a000064;
+    IPv4addrMask = 0xffffff00;
 }
 //! [0]
 
@@ -147,8 +176,14 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
         }else{
             //qDebug()<<"The NodePixmapFlag:"<<NodePixmapFlag;
             startPoint = event->pos();
+            Rnode tempnode;
+            tempnode.number = get_nodenumber();
+            tempnode.ipv4addr = get_ipv4addr(tempnode.number);
+            tempnode.ipv4mask = get_ipv4mask();
+            tempnode.point = startPoint;
 
-            drawPixmapTo(startPoint);
+            list_add(listRouter, tempnode);
+            drawPixmapTo(startPoint, tempnode);
         }
     }
 }
@@ -229,15 +264,27 @@ void ScribbleArea::drawLineMove(const QPoint &endPoint)
     lastPoint=endPoint;
 }
 
-void ScribbleArea::drawPixmapTo(const QPoint &endPoint)
+void ScribbleArea::drawPixmapTo(const QPoint &endPoint, Rnode &tempnode)
 {
     QPainter painter(&image);
     QPixmap pix;
-    pix.load(":/images/node.png");
+    pix.load(":/images/node_64x64.png");
     int x = endPoint.x();
     int y = endPoint.y();
     painter.drawPixmap(x-32,y-32,pix);
-    painter.drawText(x-36,y+36,QString("192.168.1.1"));
+
+    unsigned int ipv4addr = tempnode.ipv4addr;
+
+    char stripv4addr[16]={0};
+    unsigned char *charipv4addr =  (unsigned char*)(&ipv4addr);
+    qDebug()<<"ipv4addr:"<<hex<<charipv4addr[0]<<endl;
+    qDebug()<<"ipv4addr:"<<hex<<charipv4addr[1]<<endl;
+    qDebug()<<"ipv4addr:"<<hex<<charipv4addr[2]<<endl;
+    qDebug()<<"ipv4addr:"<<hex<<charipv4addr[3]<<endl;
+
+    sprintf(stripv4addr,"%d.%d.%d.%d/24",charipv4addr[3], charipv4addr[2], charipv4addr[1], charipv4addr[0]);
+    qDebug()<<stripv4addr<<endl;
+    painter.drawText(x-40,y+36,QString(stripv4addr));
     update();
 }
 

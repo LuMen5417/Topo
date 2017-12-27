@@ -17,11 +17,21 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
- private slots:
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
+private slots:
+    void open();
+    void about();
+    void saveAs();
     void pushButtonNodeSlot();
     void pushButtonLineSlot();
+    void pushButtonConfigureSlot();
+    void pushButtonDeleteSlot();
 
 private:
+    bool maybeSave();
+    bool saveFile(const QByteArray &fileFormat);
     Ui::MainWindow *ui;
     ScribbleArea *scribbleArea;
 };

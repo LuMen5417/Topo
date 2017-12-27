@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Topo</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="res.qrc">
+    <normaloff>:/images/mainflag.png</normaloff>:/images/mainflag.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -27,7 +31,7 @@
     <item row="0" column="0">
      <widget class="QWidget" name="widget" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -38,11 +42,11 @@
       <property name="styleSheet">
        <string notr="true">background-color: rgb(249, 249, 247);</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0">
-       <item row="1" column="0">
+      <layout class="QGridLayout" name="gridLayout_2" rowstretch="1,1,1,1,2" rowminimumheight="0,0,0,0,0">
+       <item row="2" column="0">
         <widget class="QPushButton" name="pushButton_line">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -56,8 +60,8 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>64</width>
-           <height>64</height>
+           <width>32</width>
+           <height>32</height>
           </size>
          </property>
          <property name="flat">
@@ -65,10 +69,10 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QPushButton" name="pushButton_node">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -82,8 +86,48 @@
          </property>
          <property name="iconSize">
           <size>
-           <width>64</width>
-           <height>64</height>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="pushButton_delete">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButton_configure">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/images/configure.png</normaloff>:/images/configure.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
           </size>
          </property>
          <property name="flat">
@@ -110,22 +154,24 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
+    <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuSetting">
+   <widget class="QMenu" name="menuOption">
     <property name="title">
-     <string>Setting</string>
+     <string>Option</string>
     </property>
+    <addaction name="actionClear_Screen"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAbout_Qt"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuSetting"/>
+   <addaction name="menuOption"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -157,10 +203,47 @@
     <string>Save as</string>
    </property>
   </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionClear_Screen">
+   <property name="text">
+    <string>Clear Screen</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="res.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>461</x>
+     <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
