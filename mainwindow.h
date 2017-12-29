@@ -28,6 +28,7 @@ private slots:
     void pushButtonLineSlot();
     void pushButtonConfigureSlot();
     void pushButtonDeleteSlot();
+    void pushButtonArrowSlot();
 
 private:
     bool maybeSave();

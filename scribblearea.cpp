@@ -67,6 +67,7 @@ extern int NodePixmapFlag;
 unsigned int IPv4addrPool;
 unsigned int IPv4addrMask;
 int nodePool;
+int linkPool;
 
 void list_add(nodeList &listcopy, const Rnode tempnode)
 {
@@ -89,6 +90,35 @@ unsigned int get_ipv4mask()
     return IPv4addrMask;
 }
 
+Rnode getRouterNode(nodeList &listcopy, QPoint point)
+{
+    Rnode tempnode;
+    int x,y,temp_x,temp_y;
+
+    tempnode.number = 0;
+
+    if(listcopy.isEmpty())
+        return tempnode;
+
+    QList<Rnode>::iterator i;
+
+    for(i = listcopy.begin(); i != listcopy.end(); ++i){
+         x = (*i).point.x();
+         y = (*i).point.y();
+
+         temp_x = point.x();
+         temp_y = point.y();
+
+         if((x-16 < temp_x) && (temp_x < x+16))
+            if((y-16 < temp_y) && (temp_y < y + 16)){
+                tempnode = (*i);
+                return tempnode;
+         }
+    }
+
+    return tempnode;
+}
+
 //! [0]
 ScribbleArea::ScribbleArea(QWidget *parent)
     : QWidget(parent)
@@ -99,6 +129,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     myPenWidth = 2;
     myPenColor = Qt::green;
 
+    linkPool = 0;
     nodePool = 0;
     IPv4addrPool = 0x0a000064;
     IPv4addrMask = 0xffffff00;
@@ -168,11 +199,23 @@ void ScribbleArea::clearImage()
 void ScribbleArea::mousePressEvent(QMouseEvent *event)
 //! [11] //! [12]
 {
+    int num = 0;
+    Rnode node;
+
     if (event->button() == Qt::LeftButton) {
 
         if (NodePixmapFlag != 1){
             startPoint = event->pos();
-            scribbling = true;
+
+            node = getRouterNode(listRouter,startPoint);
+            num = node.number;
+            qDebug()<<"The number:"<<num;
+            if(num != 0){
+                scribbling = true;
+                curLink.startNumer = node.number;
+                curLink.startPoint = node.point;
+            }else
+                scribbling = false;
         }else{
             //qDebug()<<"The NodePixmapFlag:"<<NodePixmapFlag;
             startPoint = event->pos();
@@ -197,9 +240,18 @@ void ScribbleArea::mouseMoveEvent(QMouseEvent *event)
 
 void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
+    QPoint endPoint;
+    Rnode node;
+    int num;
+
     if (event->button() == Qt::LeftButton && scribbling) {
-        drawLineTo(event->pos());
-        scribbling = false;
+        endPoint = event->pos();
+        node = getRouterNode(listRouter,endPoint);
+        num = node.number;
+        if(num != 0){
+            drawLineTo(endPoint);
+            scribbling = false;
+        }
     }
 }
 

@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->pushButton_line, &QPushButton::clicked,this,&MainWindow::pushButtonLineSlot);
     QObject::connect(ui->pushButton_delete, &QPushButton::clicked,this,&MainWindow::pushButtonDeleteSlot);
     QObject::connect(ui->pushButton_configure, &QPushButton::clicked,this,&MainWindow::pushButtonConfigureSlot);
+    QObject::connect(ui->pushButton_arrow, &QPushButton::clicked,this,&MainWindow::pushButtonArrowSlot);
 
     connect(ui->actionSave_as, SIGNAL(triggered()), this, SLOT(saveAs()));
     connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(open()));
@@ -106,6 +107,14 @@ void MainWindow::pushButtonConfigureSlot()
 {
     //set cursor
     setCursor(QCursor(Qt::WaitCursor));
+    NodePixmapFlag = 0;
+}
+
+void MainWindow::pushButtonArrowSlot()
+{
+    //set cursor
+    setCursor(QCursor(Qt::ArrowCursor));
+    NodePixmapFlag = 0;
 }
 
 bool MainWindow::saveFile(const QByteArray &fileFormat)

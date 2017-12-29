@@ -65,13 +65,23 @@ typedef struct RouterNode{
     QPoint point;
 }Rnode;
 
+typedef struct WlanLink{
+    int startNumer;
+    int endNumber;
+    int serialNumber;
+    QPoint startPoint;
+    QPoint endPoint;
+}Wlink;
+
 typedef QList<Rnode> nodeList;
+typedef QList<Wlink> linkList;
 
 unsigned int get_nodenumber();
 unsigned int get_ipv4addr(int number);
 unsigned int get_ipv4mask();
 
 void list_add(nodeList &listcopy, const Rnode tempnode);
+Rnode getRouterNode(nodeList &listcopy, QPoint point);
 
 //! [0]
 class ScribbleArea : public QWidget
@@ -107,6 +117,7 @@ private:
     void drawPixmapTo(const QPoint &endPoint, Rnode &tempnode);
     void resizeImage(QImage *image, const QSize &newSize);
 
+
     bool modified;
     bool scribbling;
     int myPenWidth;
@@ -114,6 +125,8 @@ private:
     QImage image;
     QPoint lastPoint,startPoint;
     nodeList listRouter;
+    nodeList listLink;
+    Wlink curLink;
 };
 //! [0]
 

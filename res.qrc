@@ -8,5 +8,6 @@
         <file>images/delete_16x16.png</file>
         <file>images/mainflag.png</file>
         <file>images/node_64x64.png</file>
+        <file>images/arrow_32x32.png</file>
     </qresource>
 </RCC>
