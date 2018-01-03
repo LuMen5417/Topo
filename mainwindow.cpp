@@ -5,7 +5,8 @@
 #include <QtWidgets>
 #include <QPainter>
 
-int NodePixmapFlag=0;
+int NodePixmapFlag = 0;
+int LinkDrawFlag = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -77,7 +78,9 @@ void MainWindow::pushButtonNodeSlot()
     pixmap.load(":/images/node.png");
     cursor = QCursor(pixmap, -1, -1);
     setCursor(cursor);
+
     NodePixmapFlag = 1;
+    LinkDrawFlag = 0;
 }
 
 void MainWindow::pushButtonLineSlot()
@@ -88,7 +91,9 @@ void MainWindow::pushButtonLineSlot()
     pixmap.load(":/images/line_16x16.png");
     cursor = QCursor(pixmap, -1, -1);
     setCursor(cursor);
+
     NodePixmapFlag = 0;
+    LinkDrawFlag = 1;
 }
 
 void MainWindow::pushButtonDeleteSlot()
@@ -100,21 +105,27 @@ void MainWindow::pushButtonDeleteSlot()
     pixmap.load(":/images/delete_16x16.png");
     cursor = QCursor(pixmap, -1, -1);
     setCursor(cursor);
+
     NodePixmapFlag = 0;
+    LinkDrawFlag = 0;
 }
 
 void MainWindow::pushButtonConfigureSlot()
 {
     //set cursor
     setCursor(QCursor(Qt::WaitCursor));
+
     NodePixmapFlag = 0;
+    LinkDrawFlag = 0;
 }
 
 void MainWindow::pushButtonArrowSlot()
 {
     //set cursor
     setCursor(QCursor(Qt::ArrowCursor));
+
     NodePixmapFlag = 0;
+    LinkDrawFlag = 0;
 }
 
 bool MainWindow::saveFile(const QByteArray &fileFormat)

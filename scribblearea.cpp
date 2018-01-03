@@ -63,15 +63,21 @@
 #include "scribblearea.h"
 
 extern int NodePixmapFlag;
+extern int LinkDrawFlag;
 
 unsigned int IPv4addrPool;
 unsigned int IPv4addrMask;
 int nodePool;
 int linkPool;
 
-void list_add(nodeList &listcopy, const Rnode tempnode)
+void list_node_add(nodeList &listcopy, const Rnode tempnode)
 {
     listcopy.push_front(tempnode);
+}
+
+void list_link_add(linkList &listcopy, const Wlink templink)
+{
+    listcopy.push_front(templink);
 }
 
 unsigned int get_ipv4addr(int number)
@@ -203,10 +209,9 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
     Rnode node;
 
     if (event->button() == Qt::LeftButton) {
+        startPoint = event->pos();
 
-        if (NodePixmapFlag != 1){
-            startPoint = event->pos();
-
+        if(LinkDrawFlag == 1){
             node = getRouterNode(listRouter,startPoint);
             num = node.number;
             qDebug()<<"The number:"<<num;
@@ -216,8 +221,7 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
                 curLink.startPoint = node.point;
             }else
                 scribbling = false;
-        }else{
-            //qDebug()<<"The NodePixmapFlag:"<<NodePixmapFlag;
+        }else if(NodePixmapFlag == 1){
             startPoint = event->pos();
             Rnode tempnode;
             tempnode.number = get_nodenumber();
@@ -225,8 +229,10 @@ void ScribbleArea::mousePressEvent(QMouseEvent *event)
             tempnode.ipv4mask = get_ipv4mask();
             tempnode.point = startPoint;
 
-            list_add(listRouter, tempnode);
+            list_node_add(listRouter, tempnode);
             drawPixmapTo(startPoint, tempnode);
+        }else{
+            ;
         }
     }
 }
@@ -242,15 +248,26 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     QPoint endPoint;
     Rnode node;
+    Wlink link;
     int num;
 
     if (event->button() == Qt::LeftButton && scribbling) {
         endPoint = event->pos();
         node = getRouterNode(listRouter,endPoint);
         num = node.number;
+        endPoint = node.point;
         if(num != 0){
             drawLineTo(endPoint);
             scribbling = false;
+
+            link.startNumer = curLink.startNumer;
+            link.startPoint = curLink.startPoint;
+            link.endNumber = node.number;
+            link.endPoint = endPoint;
+            linkPool += 1;
+            link.serialNumber = linkPool;
+
+            list_link_add(listLink,link);
         }
     }
 }
@@ -288,11 +305,11 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
 
-    painter.drawLine(startPoint, endPoint);
+    painter.drawLine(curLink.startPoint, endPoint);
     modified = true;
 
     int rad = (myPenWidth / 2) + 2;
-    update(QRect(startPoint, endPoint).normalized()
+    update(QRect(curLink.startPoint, endPoint).normalized()
                                      .adjusted(-rad, -rad, +rad, +rad));
 
     startPoint = endPoint;

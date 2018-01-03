@@ -80,7 +80,8 @@ unsigned int get_nodenumber();
 unsigned int get_ipv4addr(int number);
 unsigned int get_ipv4mask();
 
-void list_add(nodeList &listcopy, const Rnode tempnode);
+void list_node_add(nodeList &listcopy, const Rnode tempnode);
+void list_link_add(linkList &listcopy, const Wlink templink);
 Rnode getRouterNode(nodeList &listcopy, QPoint point);
 
 //! [0]
@@ -125,7 +126,7 @@ private:
     QImage image;
     QPoint lastPoint,startPoint;
     nodeList listRouter;
-    nodeList listLink;
+    linkList listLink;
     Wlink curLink;
 };
 //! [0]
